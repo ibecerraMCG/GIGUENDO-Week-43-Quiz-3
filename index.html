@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 43 Practice Quiz 3</title>
+
+    <style>
+        /* --- CSS Variables & Themes --- */
+        :root {
+            --transition-speed: 0.3s;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            
+            /* Default Feedback Colors (Fallback for custom themes) */
+            --feedback-success-bg: #064e3b;
+            --feedback-success-border: #059669;
+            --feedback-success-text: #a7f3d0;
+            --feedback-error-bg: #7f1d1d;
+            --feedback-error-border: #dc2626;
+            --feedback-error-text: #fecaca;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #1e293b; --bg-card: #334155; --bg-header: #0f172a;
+            --text-main: #f1f5f9; --text-muted: #94a3b8; --text-accent: #38bdf8;
+            --border-color: #475569; --highlight-bg: #475569;
+            --button-bg: #38bdf8; --button-text: #0f172a; --button-hover: #0ea5e9;
+        }
+
+        [data-theme="light"] {
+            --bg-body: #f3f4f6; --bg-card: #ffffff; --bg-header: #ffffff;
+            --text-main: #1f2937; --text-muted: #6b7280; --text-accent: #2563eb;
+            --border-color: #e5e7eb; --highlight-bg: #f3f4f6;
+            --button-bg: #2563eb; --button-text: #ffffff; --button-hover: #1d4ed8;
+            --feedback-success-bg: #ecfdf5; --feedback-success-border: #34d399; --feedback-success-text: #065f46;
+            --feedback-error-bg: #fef2f2; --feedback-error-border: #f87171; --feedback-error-text: #991b1b;
+        }
+
+        [data-theme="midnight"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #e0e0e0; --text-muted: #888888; --text-accent: #90caf9;
+            --border-color: #333333; --highlight-bg: #1a1a1a;
+            --button-bg: #90caf9; --button-text: #000000; --button-hover: #42a5f5;
+            --feedback-success-bg: #051b11; --feedback-success-border: #0f5132; --feedback-success-text: #75b798;
+            --feedback-error-bg: #2c0b0e; --feedback-error-border: #842029; --feedback-error-text: #ea868f;
+        }
+
+        [data-theme="legacy-dark"] {
+            --bg-body: #2d343e; --bg-card: #3c424f; --bg-header: #3c424f;
+            --text-main: #e8e6e3; --text-muted: #b0c4de; --text-accent: #8ab4f8;
+            --border-color: #555; --highlight-bg: #454c5a;
+            --button-bg: #8ab4f8; --button-text: #202124; --button-hover: #a3c5f9;
+            --feedback-success-bg: #344e41; --feedback-success-border: #52b788; --feedback-success-text: #c7f9cc;
+            --feedback-error-bg: #5e2129; --feedback-error-border: #a4133c; --feedback-error-text: #f8d7da;
+        }
+
+        [data-theme="sepia"] {
+            --bg-body: #f4ecd8; --bg-card: #fdf6e3; --bg-header: #e4d5b7;
+            --text-main: #433422; --text-muted: #7c6f5a; --text-accent: #a05a2c;
+            --border-color: #d3c4a5; --highlight-bg: #ebe1c9;
+            --button-bg: #a05a2c; --button-text: #fdf6e3; --button-hover: #864822;
+            --feedback-success-bg: #e6f4ea; --feedback-success-border: #8ab893; --feedback-success-text: #2e4c35;
+            --feedback-error-bg: #f9e3e3; --feedback-error-border: #d48f8f; --feedback-error-text: #5c2b2b;
+        }
+
+        [data-theme="contrast"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #ffffff; --text-muted: #dddddd; --text-accent: #ffff00;
+            --border-color: #ffffff; --highlight-bg: #333333;
+            --button-bg: #ffff00; --button-text: #000000; --button-hover: #e6e600;
+            --feedback-success-bg: #000000; --feedback-success-border: #00ff00; --feedback-success-text: #00ff00;
+            --feedback-error-bg: #000000; --feedback-error-border: #ff0000; --feedback-error-text: #ff0000;
+        }
+
+        /* --- Global Reset & Layout --- */
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-main);
+            margin: 0;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            line-height: 1.6;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--bg-header);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        header.unpinned { position: relative; box-shadow: none; }
+
+        .header-top {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; flex-wrap: wrap; gap: 15px;
+        }
+
+        header h1 { font-size: 1.5rem; margin: 0; color: var(--text-accent); font-weight: 700; }
+
+        .controls-wrapper { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+        /* --- Custom Theme Builder --- */
+        .custom-builder {
+            display: none; flex-wrap: wrap; gap: 15px;
+            background-color: var(--bg-card); padding: 10px 15px;
+            border-radius: 8px; border: 1px solid var(--border-color);
+            margin-top: 5px; font-size: 0.85rem; animation: fadeIn 0.3s;
+            width: 100%; justify-content: flex-end;
+        }
+        .custom-builder.active { display: flex; }
+        .color-picker-group { display: flex; align-items: center; gap: 8px; }
+        .color-picker-group input[type="color"] {
+            border: none; width: 25px; height: 25px; border-radius: 4px;
+            cursor: pointer; padding: 0; background: none;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Controls --- */
+        .header-btn {
+            background-color: var(--highlight-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-btn:hover {
+            border-color: var(--text-accent);
+            color: var(--text-accent);
+        }
+
+        .pin-btn {
+            background: none; border: 1px solid var(--border-color); color: var(--text-main);
+            cursor: pointer; padding: 0 10px; border-radius: 6px; font-size: 1rem;
+            transition: background-color 0.2s; height: 34px; display: flex;
+            align-items: center; justify-content: center;
+        }
+        .pin-btn:hover { background-color: var(--highlight-bg); }
+        .pin-btn.pin-active { background-color: rgba(0, 0, 0, 0.1); }
+
+        select#theme-select {
+            padding: 0 12px; border-radius: 6px; border: 1px solid var(--border-color);
+            background-color: var(--bg-card); color: var(--text-main);
+            cursor: pointer; font-family: inherit; height: 34px;
+        }
+
+        /* --- Section Navigation --- */
+        .section-nav { display: flex; gap: 10px; flex-wrap: wrap; }
+        .section-nav button {
+            background-color: var(--highlight-bg); color: var(--text-main);
+            border: 1px solid var(--border-color); padding: 6px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+            font-weight: 500; transition: all 0.2s;
+        }
+        .section-nav button:hover { border-color: var(--text-accent); color: var(--text-accent); }
+
+        /* --- Main Content --- */
+        .container {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 0 1rem 4rem 1rem;
+        }
+
+        .section-header {
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--text-accent);
+            color: var(--text-accent);
+            font-size: 1.5rem;
+            font-weight: 700;
+            scroll-margin-top: 150px; /* Offset for sticky header */
+        }
+
+        /* --- Question Card --- */
+        .question-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .lo-box {
+            background-color: var(--highlight-bg);
+            border-left: 4px solid var(--text-accent);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-style: italic;
+            display: none; /* Hidden by default */
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Options --- */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: var(--highlight-bg);
+            border-color: var(--text-muted);
+        }
+
+        .option-label input {
+            margin-top: 0.3rem;
+            margin-right: 1rem;
+            accent-color: var(--text-accent);
+            transform: scale(1.2);
+        }
+
+        /* --- Buttons --- */
+        .btn-check {
+            margin-top: 1.5rem;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-check:hover {
+            opacity: 0.9;
+        }
+
+        .btn-link {
+            display: inline-block;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-link:hover {
+            opacity: 0.9;
+        }
+
+        /* --- Feedback Area --- */
+        .feedback {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: none; /* Hidden by default */
+            border: 1px solid transparent;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background-color: var(--feedback-success-bg);
+            border-color: var(--feedback-success-border);
+            color: var(--feedback-success-text);
+        }
+
+        .feedback.incorrect {
+            background-color: var(--feedback-error-bg);
+            border-color: var(--feedback-error-border);
+            color: var(--feedback-error-text);
+        }
+
+        .feedback-header {
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .rationale {
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .source {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            font-style: italic;
+            border-top: 1px dashed currentColor;
+            padding-top: 0.5rem;
+        }
+
+        /* --- Mobile Tweaks --- */
+        @media (max-width: 768px) {
+            .header-top { flex-direction: column; align-items: flex-start; }
+            .controls-wrapper { width: 100%; justify-content: flex-start; }
+            .section-nav { justify-content: flex-start; }
+            .custom-builder { justify-content: flex-start; }
+            header h1 { font-size: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header">
+        <div class="header-top">
+            <h1>Week 43 Practice Quiz 3</h1>
+            <div class="controls-wrapper">
+                
+                <!-- Reveal LOs Button in Header -->
+                <button id="reveal-all-btn" class="header-btn" onclick="toggleAllLOs()">Show Learning Objectives</button>
+
+                <!-- Pin Button -->
+                <button class="pin-btn pin-active" id="pin-btn" onclick="toggleHeader()" title="Pin/Unpin Header">📌</button>
+                
+                <!-- Theme Selector -->
+                <div class="theme-control">
+                    <select id="theme-select" onchange="changeTheme(this.value)">
+                        <option value="dark">Modern Dark</option>
+                        <option value="midnight">Midnight</option>
+                        <option value="light">Modern Light</option>
+                        <option value="legacy-dark">Legacy Dark</option>
+                        <option value="sepia">Sepia</option>
+                        <option value="contrast">High Contrast</option>
+                        <option value="custom">⚙️ Custom...</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Custom Theme Color Pickers -->
+            <div class="custom-builder" id="custom-builder">
+                <div class="color-picker-group">
+                    <label>Background:</label>
+                    <input type="color" id="color-bg" value="#1a1a2e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Cards:</label>
+                    <input type="color" id="color-card" value="#16213e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Text:</label>
+                    <input type="color" id="color-text" value="#e94560" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Accent:</label>
+                    <input type="color" id="color-accent" value="#0f3460" oninput="updateCustomTheme()">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dynamic Navigation Bar -->
+        <div class="section-nav" id="section-nav"></div>
+    </header>
+
+    <div class="container">
+        <div id="quiz-root">
+            <!-- Content injected via JS -->
+        </div>
+    </div>
+
+    <script>
+        // --- Data ---
+        const quizData = [
+            // --- Section 1: Male Reproductive Disorders ---
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO1: Explain male sex differentiation to a testis—SRY, AMH, & the steroid pathway leading to androgens.",
+                question: "A 16-year-old phenotypic female presents for evaluation of primary amenorrhea. Physical examination reveals an absence of secondary sexual characteristics, and an ultrasound shows a completely absent uterus and vagina, along with bilateral streak gonads. Karyotype analysis reveals a 46, XY chromosomal pattern. A null mutation in which of the following genes is the most likely cause of this patient's complete failure of testicular differentiation?",
+                options: {
+                    A: "AR (Androgen Receptor)",
+                    B: "FOXL2",
+                    C: "SRY",
+                    D: "StAR",
+                    E: "WNT4"
+                },
+                correctAnswer: "C",
+                rationale: "In a 46, XY individual, the SRY gene is required to initiate testicular development (by upregulating SOX9). A mutation in the SRY gene results in gonadal failure with streak gonads, preventing male differentiation (Swyer syndrome).",
+                source: "Male Reproductive Disorders PDF, slide 5: '-Human pathogenic variants: SRY: gonadal failure with streaks (Swyer syndrome = 46,XY DSD)'"
+            },
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO1: Explain male sex differentiation to a testis—SRY, AMH, & the steroid pathway leading to androgens.",
+                question: "A newborn infant with a 46, XY karyotype is found to have ambiguous external genitalia. Further evaluation reveals perfectly normal internal male reproductive ducts (vas deferens, epididymis, seminal vesicles) but severely undermasculinized external genitalia (urogenital sinus, prostate, genital tubercle). This specific pattern of development strongly suggests an enzymatic defect in the conversion of testosterone to which of the following hormones?",
+                options: {
+                    A: "Aldosterone",
+                    B: "Androstenedione",
+                    C: "Dihydrotestosterone (DHT)",
+                    D: "Estradiol",
+                    E: "Pregnenolone"
+                },
+                correctAnswer: "C",
+                rationale: "In male sexual differentiation, testosterone (secreted by Leydig cells) directly drives the differentiation of the internal Wolffian ducts. However, the differentiation of the external genitalia requires testosterone to be converted into the more potent Dihydrotestosterone (DHT) by the enzyme 5-alpha-reductase. A defect in this conversion pathway leads to normal internal ducts but abnormal external genitalia.",
+                source: "Male Reproductive Disorders PDF, slide 6: 'Male Sexual Differentiation... 2. Testosterone (8 wk) (Leydig cells) -> + Wolffian (Internal) 1. vas 2. epididymis 3. seminal vesicle... 5a-reductase -> DHT -> External genitalia 1. urogenital sinus 2. prostate 3. genital tubercle'"
+            },
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO2: Explain the locations & functions of Sertoli cells and Leydig cells.",
+                question: "A 28-year-old man undergoes a fertility evaluation. Semen analysis shows azoospermia, but circulating testosterone levels are completely normal. A testicular biopsy reveals an absence of the cells that normally secrete androgen-binding protein (ABP) into the luminal fluid. The missing cells are normally located in which of the following areas?",
+                options: {
+                    A: "Anterior pituitary",
+                    B: "Bulbourethral gland",
+                    C: "Interstitial stroma",
+                    D: "Prostate gland",
+                    E: "Seminiferous tubule"
+                },
+                correctAnswer: "E",
+                rationale: "Sertoli cells are located within the seminiferous tubules. Their functions include secreting luminal fluid containing androgen-binding protein (ABP), forming the blood-testis barrier, and nourishing developing sperm. Leydig cells, which produce testosterone, are located in the interstitial stroma outside the tubules.",
+                source: "Male Reproductive Disorders PDF, slides 8 & 19: 'Interstitial cells of Leydig... [Image pointing to Interstitial cells outside the tubule]... [Image pointing to Seminiferous tubule]' AND 'Sertoli Cell Functions... 2. Secrete luminal fluid, including androgen-binding protein (ABP)'"
+            },
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO2: Explain the locations & functions of Sertoli cells and Leydig cells.",
+                question: "During fetal development, a male fetus begins producing the testosterone required for normal male internal duct differentiation around 8 weeks of gestation. At this specific developmental stage, before the fetal pituitary is fully mature, which of the following hormones directly stimulates the Leydig cells to produce this essential testosterone?",
+                options: {
+                    A: "Anti-Mullerian Hormone (AMH)",
+                    B: "Follicle-Stimulating Hormone (FSH)",
+                    C: "Gonadotropin-Releasing Hormone (GnRH)",
+                    D: "Human Chorionic Gonadotropin (hCG)",
+                    E: "Luteinizing Hormone (LH)"
+                },
+                correctAnswer: "D",
+                rationale: "Leydig cells are responsible for producing testosterone. During fetal development, before the onset of endogenous pubertal LH surges, Leydig cells are stimulated by placental hCG to produce the testosterone necessary to ensure normal male differentiation.",
+                source: "Male Reproductive Disorders PDF, slide 9: 'Leydig Cell Functions 1. During fetal development, they respond to hCG & produce testosterone to ensure normal male development'"
+            },
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO3: Diagram the hypothalamic-pituitary-testicular axis.",
+                question: "A 35-year-old male bodybuilder illegally uses high doses of synthetic testosterone to increase his muscle mass. Over time, this exogenous steroid profoundly suppresses his hypothalamic-pituitary-testicular axis. Which of the following accurately describes the primary feedback effect of this exogenous testosterone?",
+                options: {
+                    A: "It inhibits AMH secretion from the testis.",
+                    B: "It inhibits FSH secretion directly from the Sertoli cells.",
+                    C: "It inhibits LH predominantly at the hypothalamus and pituitary.",
+                    D: "It stimulates GnRH release from the hypothalamus.",
+                    E: "It stimulates the Leydig cells to hypertrophy."
+                },
+                correctAnswer: "C",
+                rationale: "In the hypothalamic-pituitary-testicular axis, testosterone produced by the Leydig cells (or taken exogenously) exerts strong negative feedback directly on the hypothalamus and the anterior pituitary, predominantly inhibiting the release of Luteinizing Hormone (LH).",
+                source: "Male Reproductive Disorders PDF, slide 10: 'Hypothalamic-Pituitary-Testicular Axis... Leydig cells-Testosterone: inhibits LH predominantly at HYPO & PIT'"
+            },
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO3: Diagram the hypothalamic-pituitary-testicular axis.",
+                question: "A 30-year-old man presents with infertility. Blood tests reveal a highly elevated Follicle-Stimulating Hormone (FSH) level, but entirely normal levels of Luteinizing Hormone (LH) and testosterone. A highly specific defect in the Sertoli cells is suspected. This patient's isolated elevation in FSH is most likely due to a failure of the Sertoli cells to secrete which of the following hormones?",
+                options: {
+                    A: "Androstenedione",
+                    B: "Dihydrotestosterone (DHT)",
+                    C: "Gonadotropin-releasing hormone (GnRH)",
+                    D: "Inhibin B",
+                    E: "Pregnenolone"
+                },
+                correctAnswer: "D",
+                rationale: "In the male reproductive axis, Sertoli cells produce Inhibin B, which provides specific negative feedback to the anterior pituitary to halt the secretion of FSH. If Sertoli cells fail to secrete Inhibin B, FSH levels will rise uninhibited, while LH and testosterone (regulated by Leydig cells) remain normal.",
+                source: "Male Reproductive Disorders PDF, slide 21: 'Hypothalamic-Pituitary-Testicular Axis... Sertoli Cells—Inhibin B: inhibits FSH'"
+            },
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO4: Diagram testosterone levels during the different stages of male development and aging.",
+                question: "A researcher is plotting the average plasma testosterone levels of a healthy human male across his entire lifespan, from conception to old age. According to the standard physiological timeline, the very first massive peak in plasma testosterone occurs during which of the following stages of life?",
+                options: {
+                    A: "At the exact moment of birth",
+                    B: "During the first year of neonatal life",
+                    C: "During the second trimester of fetal gestation",
+                    D: "During the onset of puberty (age 12)",
+                    E: "During early adulthood (age 25)"
+                },
+                correctAnswer: "C",
+                rationale: "The plasma testosterone curve shows three distinct spikes in a male's lifetime. The very first peak occurs in utero, predominantly during the 2nd trimester of fetal gestation, to drive sexual differentiation. It spikes again briefly in the neonatal period, and then rises dramatically and permanently at puberty.",
+                source: "Male Reproductive Disorders PDF, slide 17: 'Stages of Male Sexual Function: Plasma Testosterone & Sperm Production [Graph shows the first peak occurring between the 1st and 3rd trimester, peaking in the 2nd trimester of fetal gestation]'"
+            },
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO4: Diagram testosterone levels during the different stages of male development and aging.",
+                question: "A 78-year-old man visits his primary care physician for an annual physical. The physician notes that the patient's serum testosterone level has decreased gradually over the past decade. Along with this drop in testosterone associated with aging, an evaluation of his gonadotropins will most typically reveal which of the following?",
+                options: {
+                    A: "An isolated, profound decrease in FSH",
+                    B: "FSH and LH that tend to remain normal",
+                    C: "Total suppression of LH to undetectable levels",
+                    D: "Undetectable GnRH levels",
+                    E: "Uniformly elevated FSH and LH indicative of complete testicular failure"
+                },
+                correctAnswer: "B",
+                rationale: "As men age, testosterone gradually decreases. However, unlike women undergoing menopause (who experience massive spikes in gonadotropins due to total gonadal failure), aging men retain some gonadal function. Therefore, while testosterone drops, FSH and LH tend to remain relatively normal, representing a combination of both hypergonadotropic and hypogonadotropic states.",
+                source: "Male Reproductive Disorders PDF, slide 52: 'Testicular Function with Age... -As men age, testosterone decreases gradually and sperm may decrease... -Testosterone may drop, but FSH and LH tend to remain normal'"
+            },
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO5: Explain the primary actions of testosterone.",
+                question: "A 15-year-old boy experiences a rapid growth spurt during puberty. Over the next two years, he reaches his final adult height, and his long bones cease growing. The cessation of his bone growth is mediated by epiphyseal closure. Which of the following directly promotes this epiphyseal closure at puberty?",
+                options: {
+                    A: "Conversion of circulating testosterone to estrogen",
+                    B: "Direct binding of DHT to bone matrix receptors",
+                    C: "Suppression of anterior pituitary growth hormone",
+                    D: "Suppression of local nitric oxide release",
+                    E: "Upregulation of sex hormone-binding globulin (SHBG)"
+                },
+                correctAnswer: "A",
+                rationale: "At puberty, testosterone drives increased bone growth, bone matrix, and calcium deposition. However, the ultimate closure of the epiphyseal plates, which ends long bone growth, occurs only after testosterone is converted to estrogen.",
+                source: "Male Reproductive Disorders PDF, slide 16: 'Testosterone Functions at Puberty... -Increased Bone Growth -Increased bone matrix, calcium deposition & promotes epiphyseal closure (after its conversion to estrogen)'"
+            },
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO5: Explain the primary actions of testosterone.",
+                question: "A 30-year-old man begins injecting unprescribed testosterone in an attempt to improve his athletic performance. Routine labs ordered by his physician several months later is most likely to show an increase in which of the following parameters as a direct physiological action of this hormone?",
+                options: {
+                    A: "Growth of hair on the top of the head",
+                    B: "Luteinizing hormone (LH) concentration",
+                    C: "Red blood cell number",
+                    D: "Sperm count",
+                    E: "Testicular volume"
+                },
+                correctAnswer: "C",
+                rationale: "Testosterone functions to increase athletic performance by increasing the basal metabolic rate, oxygen utilization, and red blood cell number. Notably, exogenous testosterone reduces sperm count and shrinks testes via negative feedback, and causes baldness (decreased hair growth on top of the head).",
+                source: "Male Reproductive Disorders PDF, slide 16: 'Testosterone Functions at Puberty... -Increased athletic performance -Increased basal metabolic rate, red blood cell number, & oxygen utilization'"
+            },
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO6: Diagram the path of sperm travel in the male reproductive tract.",
+                question: "A 32-year-old man is undergoing an evaluation for infertility. He successfully produces mature sperm in the testes, but the sperm fail to be properly expelled into the internal urethra during the initial phase of ejaculation. This specific phase, known as emission, relies heavily on the active contraction of which of the following structures?",
+                options: {
+                    A: "Bulbocavernosus muscle",
+                    B: "Ischiocavernosus muscle",
+                    C: "Pampiniform plexus",
+                    D: "Seminiferous tubules",
+                    E: "Vas deferens and ampulla"
+                },
+                correctAnswer: "E",
+                rationale: "The path of sperm during sexual climax involves emission, which is the expulsion of sperm into the internal urethra. This is driven by sympathetic impulses causing the contraction of the vas deferens and ampulla (along with secretions from the prostate and seminal vesicle).",
+                source: "Male Reproductive Disorders PDF, slide 29: 'Emission & Ejaculation... -This initiates emission—contraction of vas & ampulla to expel sperm into internal urethra (prostate & seminal vesicle)'"
+            },
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO6: Diagram the path of sperm travel in the male reproductive tract.",
+                question: "During the final stage of sperm travel out of the male reproductive tract, sperm must be forcefully propelled from the urethra to the exterior. This process, known as ejaculation, is driven by the muscular contractions of which of the following structures?",
+                options: {
+                    A: "Bulbocavernosus and ischiocavernosus muscles",
+                    B: "Dartos and cremaster muscles",
+                    C: "Epididymal smooth muscle",
+                    D: "Prostatic capsule",
+                    E: "Vas deferens"
+                },
+                correctAnswer: "A",
+                rationale: "Following emission (which moves sperm into the urethra), the physical ejaculation of sperm from the urethra out of the body is caused by the muscular contractions of the bulbocavernosus and ischiocavernosus muscles, innervated by the pudendal nerves.",
+                source: "Male Reproductive Disorders PDF, slide 29: 'Emission & Ejaculation... -With muscular contractions of bulbocavernosus & ischiocavernosus (via pudendal nerves), ejaculation of sperm from the urethra occurs'"
+            },
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO7: Know the general mechanisms controlling erection & ejaculation.",
+                question: "A 60-year-old man with erectile dysfunction is prescribed sildenafil. This medication enhances erection by targeting the intracellular signaling cascade within the cavernosal smooth muscle. Sildenafil promotes the relaxation of these smooth muscle cells by directly preventing the breakdown of which of the following second messengers?",
+                options: {
+                    A: "cAMP",
+                    B: "cGMP",
+                    C: "GTP",
+                    D: "Nitric oxide (NO)",
+                    E: "Nitric oxide synthase (NOS)"
+                },
+                correctAnswer: "B",
+                rationale: "Erection relies on the release of Nitric Oxide (NO), which stimulates guanylyl cyclase to convert GTP to cGMP. The cGMP causes smooth muscle relaxation and vascular dilation. Sildenafil is a PDE5 inhibitor; it blocks the PDE5 enzyme that normally breaks down cGMP, thereby keeping cGMP levels high and maintaining the erection.",
+                source: "Male Reproductive Disorders PDF, slide 30: 'Mechanisms Controlling Erection... [Diagram shows PDE5 breaking down cGMP, and Sildenafil (Viagra) blocking PDE5, resulting in increased cGMP and Relaxation]'"
+            },
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO7: Know the general mechanisms controlling erection & ejaculation.",
+                question: "A 45-year-old man suffers a lower spinal cord injury resulting in severe damage to the reflex centers at the T12-L2 spinal segments. While he can still achieve a reflexogenic erection, he completely loses the ability to initiate emission. This is because emission is strictly dependent upon which of the following?",
+                options: {
+                    A: "Nitric oxide release from the cavernous nerve terminals",
+                    B: "Parasympathetic impulses via the pelvic splanchnic nerves",
+                    C: "Somatic impulses via the pudendal nerves",
+                    D: "Sympathetic impulses via the hypogastric and pelvic sympathetics",
+                    E: "Upregulation of cGMP in the prostate gland"
+                },
+                correctAnswer: "D",
+                rationale: "Emission (the movement of sperm into the internal urethra) is initiated by reflex centers at T12-L2 that emit sympathetic impulses to the genitals via the hypogastric and pelvic sympathetics. Damage to this sympathetic outflow prevents emission. (Ejaculation relies on somatic pudendal nerves; Erection relies on parasympathetics).",
+                source: "Male Reproductive Disorders PDF, slide 29: 'Emission & Ejaculation -With intense sexual stimulation, reflex centers at T12-L2 emit sympathetic impulses to genitals (via hypogastric & pelvic sympathetics) -This initiates emission'"
+            },
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO8: Explain the components of semen & a semen analysis.",
+                question: "A 28-year-old man undergoes a semen analysis. The laboratory reports that his ejaculate volume is 2.5 mL, but the fluid completely lacks its normal gelatinous consistency and tests completely negative for fructose. Based on these specific findings, a blockage or congenital absence of which of the following accessory glands is most likely?",
+                options: {
+                    A: "Bulbourethral glands",
+                    B: "Epididymis",
+                    C: "Prostate gland",
+                    D: "Seminal vesicles",
+                    E: "Seminiferous tubules"
+                },
+                correctAnswer: "D",
+                rationale: "The seminal vesicles contribute the largest volume to the ejaculate (1.0 - 3.0 mL) and their specific secretions are characterized as being gelatinous and fructose-positive. The prostate adds acidic, watery fluid, and the bulbourethral glands add a small volume of viscous, clear fluid.",
+                source: "Male Reproductive Disorders PDF, slide 33: 'Normal Semen Production | Source: Seminal vesicles | Volume: 1.0-3.0 ml | Characteristic: Gelatinous, Fructose positive'"
+            },
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO8: Explain the components of semen & a semen analysis.",
+                question: "A 32-year-old man and his wife are undergoing a fertility evaluation after being unable to conceive for two years. The man's semen analysis returns with the following parameters:<br><br>Total volume: 3.5 mL<br>Sperm concentration: 55 million/mL<br>Motility: 60%<br>Morphology: 2% normal forms (using strict criteria)<br><br>The physician explains that while the patient has a normal amount of sperm and they are moving adequately, the vast majority of the sperm have structural head or tail defects. Which of the following is the correct medical term for this specific semen analysis abnormality?",
+                options: {
+                    A: "Azoospermia",
+                    B: "Hematospermia",
+                    C: "Oligospermia",
+                    D: "Pyospermia",
+                    E: "Teratospermia"
+                },
+                correctAnswer: "E",
+                rationale: "It is important to know the clinical terminology used to interpret semen analysis reports. Teratospermia refers to abnormal sperm morphology. Oligospermia refers to a low sperm concentration, and azoospermia refers to a complete absence of sperm in the ejaculate. Since this patient's concentration and motility are fine but the shape/morphology is defective, he has teratospermia.",
+                source: "Male Reproductive Disorders PDF, slide 34: 'Normal Semen Analysis... Azoospermia: absence of sperm | Oligospermia: low sperm concentration | Teratospermia: abnormal morphology'"
+            },
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO9: Explain the most common causes of male infertility.",
+                question: "A 27-year-old man presents with infertility. He has no fatigue or decreased libido, and his physical exam is normal. Two semen analyses show 1-2 million sperm/cc (normal: >15 million/cc) with very low motility. Laboratory evaluation reveals:<br>Testosterone: 550 ng/dL (Normal 380-1100)<br>FSH: 12 mIU/mL (Normal 3-9)<br>LH: 5 mIU/mL (Normal 2-9)<br>Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Complete androgen insensitivity",
+                    B: "Cystic fibrosis",
+                    C: "Klinefelter syndrome",
+                    D: "Spermatogenic failure",
+                    E: "Testicular failure"
+                },
+                correctAnswer: "D",
+                rationale: "The patient has isolated high FSH with normal LH and normal testosterone. This indicates the Leydig cells are functioning normally (LH and T are normal), but the Sertoli cells/seminiferous tubules are failing (spermatogenic failure), leading to low inhibin B and a consequent isolated rise in FSH. Klinefelter (testicular failure) would typically feature high FSH, high LH, and low testosterone. Cystic fibrosis (CBAVD) features completely normal endocrine parameters with low/no sperm.",
+                source: "Male Reproductive Disorders PDF, slides 35 & 50: 'A 27 year old man has infertility... Testosterone = 550... FSH = 12... LH = 5... What is the most likely diagnosis? E. Spermatogenic failure' AND 'Spermatogenic failure –high FSH (low inhibin B); normal Leydig function'"
+            },
+            {
+                section: "Male Reproductive Disorders",
+                fullLO: "LO9: Explain the most common causes of male infertility.",
+                question: "A 30-year-old man with a long history of recurrent respiratory infections presents for an infertility workup. Endocrine parameters (FSH, LH, Testosterone) and testicular size are completely normal. Semen analysis reveals absolute azoospermia. Physical examination confirms bilateral absence of the vas deferens. This specific presentation represents a mild allelic version of which of the following genetic diseases?",
+                options: {
+                    A: "Complete androgen insensitivity syndrome",
+                    B: "Cystic fibrosis",
+                    C: "Kallmann syndrome",
+                    D: "Klinefelter syndrome",
+                    E: "Swyer syndrome"
+                },
+                correctAnswer: "B",
+                rationale: "Congenital Bilateral Absence of the Vas Deferens (CBAVD) presents as an outflow obstruction causing azoospermia with completely normal endocrine parameters and normal testes. It is considered a mild allelic version of cystic fibrosis, and about 2/3 of patients have one or more CFTR gene mutations.",
+                source: "Male Reproductive Disorders PDF, slide 48: 'Congenital Bilateral Absence of Vas Deferens (CBAVD)... Mild allelic version of cystic fibrosis (CF) • About 2/3 have one or more alleles of CFTR mutations... Endocrine parameters & testes are normal'"
+            },
+
+            // --- Section 2: Puberty ---
+            {
+                section: "Puberty",
+                fullLO: "LO1: Describe the GnRH pulse generator, including the embryologic source and the difference between continuous and pulsatile secretion.",
+                question: "A 16-year-old boy presents with delayed puberty and anosmia (an inability to smell). MRI shows no pituitary tumor. The physician suspects Kallmann syndrome, a form of idiopathic hypogonadotropic hypogonadism. The lack of GnRH secretion and simultaneous olfactory deficit in this patient is due to a failure of GnRH neurons to properly migrate from which of the following embryologic structures?",
+                options: {
+                    A: "Anterior pituitary",
+                    B: "Genital ridge",
+                    C: "Neural crest",
+                    D: "Olfactory placode",
+                    E: "Rathke's pouch"
+                },
+                correctAnswer: "D",
+                rationale: "GnRH neurons originate outside the brain. They migrate from the olfactory placode, traveling along with the olfactory nerves, to eventually settle in the hypothalamus (specifically the arcuate nucleus). In conditions like Kallmann syndrome, this migration fails, resulting in both an absence of GnRH (delayed puberty) and anosmia (loss of smell).",
+                source: "Puberty PDF, slide 5: 'GnRH neurons migrate from olfactory placode with olfactory nerves to hypothal.'"
+            },
+            {
+                section: "Puberty",
+                fullLO: "LO1: Describe the GnRH pulse generator, including the embryologic source and the difference between continuous and pulsatile secretion.",
+                question: "A researcher is evaluating the hypophyseal-portal system in a laboratory model. By altering the frequency of GnRH secretion from the arcuate nucleus, the researcher observes shifts in anterior pituitary output. If the GnRH pulse generator is manipulated to deliver rapid pulses, which of the following hormonal responses is most likely to be favored?",
+                options: {
+                    A: "Decreased estradiol secretion",
+                    B: "Decreased testosterone secretion",
+                    C: "Increased FSH secretion",
+                    D: "Increased LH secretion",
+                    E: "Increased prolactin secretion"
+                },
+                correctAnswer: "D",
+                rationale: "The frequency of the GnRH pulses dictates the specific gonadotropin released by the anterior pituitary. Slow pulses favor the secretion of FSH, whereas rapid pulses favor the secretion of LH.",
+                source: "Puberty PDF, slide 5: 'Slow pulses [arrow] Favor FSH secretion | Rapid pulses [arrow] Favor LH secretion'"
+            },
+            {
+                section: "Puberty",
+                fullLO: "LO2: Describe the feedback system upon the hypothalamic-pituitary-gonadal axis.",
+                question: "A 26-year-old woman is tracking her hormones throughout her menstrual cycle. In the middle of her cycle, a specific hormone switches from exerting negative feedback to exerting strong positive feedback, triggering the LH surge required for ovulation. Which of the following hormones is responsible for this positive feedback effect?",
+                options: {
+                    A: "Activin",
+                    B: "Estradiol",
+                    C: "Follistatin",
+                    D: "Inhibin B",
+                    E: "Progesterone"
+                },
+                correctAnswer: "B",
+                rationale: "Sex steroids generally exert negative feedback on the hypothalamus and pituitary in both males and females. However, the notable exception is estradiol in females, which exerts positive feedback just prior to ovulation to trigger the LH surge.",
+                source: "Puberty PDF, slide 7: 'Estradiol has positive feedback in females just prior to ovulation'"
+            },
+            {
+                section: "Puberty",
+                fullLO: "LO2: Describe the feedback system upon the hypothalamic-pituitary-gonadal axis.",
+                question: "A 24-year-old man undergoes a fertility evaluation. His laboratory tests reveal an isolated elevation in Follicle-Stimulating Hormone (FSH), with completely normal Luteinizing Hormone (LH) and testosterone levels. A defect in the testicular negative feedback loop is suspected. Which of the following hormones normally inhibits the secretion of FSH in males?",
+                options: {
+                    A: "Activin",
+                    B: "Follistatin",
+                    C: "Gonadotropin-Inhibitory Hormone",
+                    D: "Inhibin",
+                    E: "Kisspeptin"
+                },
+                correctAnswer: "D",
+                rationale: "Inhibin (produced by the granulosa cells in females and the Sertoli cells in males) provides specific negative feedback to the anterior pituitary to inhibit the secretion of FSH. (Activin stimulates FSH, while follistatin attenuates activin's effect).",
+                source: "Puberty PDF, slide 7: 'Gonadal inhibin (granulosa cells in females; Sertoli cells in males) inhibits FSH'"
+            },
+            {
+                section: "Puberty",
+                fullLO: "LO3: Discuss the changes in gonadotropins throughout pregnancy, neonatal, childhood, puberty, & adulthood.",
+                question: "A pediatric endocrinologist is reviewing the hormonal profile of a male infant from the fetal period through the first year of life. During gestation, fetal FSH and LH reach a peak just beyond midgestation. Which of the following mechanisms best explains why these fetal gonadotropins subsequently decrease significantly by term?",
+                options: {
+                    A: "Apoptosis of the GnRH pulse generator",
+                    B: "Negative feedback from placental steroids",
+                    C: "Positive feedback from fetal testosterone",
+                    D: "Receptor down-regulation by high fetal LH",
+                    E: "Suppression by elevated fetal prolactin"
+                },
+                correctAnswer: "B",
+                rationale: "Fetal FSH and LH peak just after midgestation but then decrease as the pregnancy approaches term. This suppression is due to the strong negative feedback exerted by the high levels of placental steroids present late in pregnancy. After birth, when the placenta is removed, this negative feedback is lost, and the gonadotropins rise again (\"minipuberty\").",
+                source: "Puberty PDF, slide 18: 'Fetal LH/FSH • FSH& LH peak just beyond midgestation & then decrease by term because of placental steroid negative feedback'"
+            },
+            {
+                section: "Puberty",
+                fullLO: "LO3: Discuss the changes in gonadotropins throughout pregnancy, neonatal, childhood, puberty, & adulthood.",
+                question: "A 5-year-old girl is evaluated for normal growth and development. Her serum FSH and LH levels are measured and found to be exceptionally low. The physician explains that these low levels are completely normal for her age. According to normal physiological patterns, which of the following is the most likely reason for these low gonadotropin levels during this specific period of childhood?",
+                options: {
+                    A: "A massive increase in continuous GnRH secretion",
+                    B: "High levels of circulating placental steroids",
+                    C: "Maximal activity of gonadal inhibin",
+                    D: "Strong suppression by a central inhibitory factor",
+                    E: "The complete absence of the anterior pituitary"
+                },
+                correctAnswer: "D",
+                rationale: "During childhood (ages 2-8), gonadotropin levels (FSH and LH) are extremely low. This occurs even in children with complete gonadal failure, indicating that the suppression is not due to sex steroid negative feedback. Instead, it is driven by a central inhibitory factor suppressing the GnRH pulse generator.",
+                source: "Puberty PDF, slide 20: 'Childhood Gonadotropins •Ages 2-8, FSH & LH are low, even in children with gonadal failure (suggests central inhibitory factor)'"
+            },
+            {
+                section: "Puberty",
+                fullLO: "LO4: Determine the level of defect in the HPG axis for delayed puberty.",
+                question: "A 16-year-old girl presents with primary amenorrhea, no breast development, and short stature. Initial laboratory evaluation reveals significantly elevated serum FSH and LH levels (hypergonadotropic hypogonadism). Based on this finding, which of the following is the most appropriate next step in her diagnostic evaluation?",
+                options: {
+                    A: "Karyotype analysis",
+                    B: "MRI of the pituitary",
+                    C: "Pelvic ultrasound to assess for Mullerian aplasia",
+                    D: "Prolactin level measurement",
+                    E: "Thyroid function testing"
+                },
+                correctAnswer: "A",
+                rationale: "High FSH and LH levels in the setting of delayed puberty indicate hypergonadotropic hypogonadism, which signifies a primary gonadal failure (the pituitary is trying to stimulate the gonads, but the gonads are unresponsive). The appropriate next step to determine the cause of the gonadal failure is a karyotype to check for chromosomal abnormalities such as Turner syndrome (45,X) or Klinefelter syndrome (47,XXY).",
+                source: "Puberty PDF, slide 36: 'Delayed Puberty: Step 3 | Hypergonadotropic Hypogonadism (Gonadal failure) [arrow pointing to] Karyotype'"
+            },
+            {
+                section: "Puberty",
+                fullLO: "LO4: Determine the level of defect in the HPG axis for delayed puberty.",
+                question: "A 16-year-old girl presents with primary amenorrhea. Physical examination reveals normal breast development and normal pubic hair. Her serum FSH, LH, and estradiol levels are all completely normal. Based on this eugonadal status, the next step in her evaluation should be to examine for which of the following?",
+                options: {
+                    A: "Central inhibitory factor overactivity",
+                    B: "Chromosomal nondisjunction (45,X)",
+                    C: "Outflow obstruction (e.g., Mullerian aplasia)",
+                    D: "Pituitary microadenoma",
+                    E: "Primary ovarian insufficiency"
+                },
+                correctAnswer: "C",
+                rationale: "Normal breast development and normal FSH/LH/steroid levels indicate that her hypothalamic-pituitary-gonadal axis is fully intact and functioning (she is \"eugonadal\"). In a eugonadal female with amenorrhea, the defect is anatomical rather than hormonal. The physician must examine for an outflow obstruction, such as Mullerian aplasia (MRKH) or Complete Androgen Insensitivity Syndrome (CAIS).",
+                source: "Puberty PDF, slide 50: 'Eugonadal [arrow pointing to] Examine for outflow obstruction [arrow pointing to Yes] -> Mullerian aplasia vs. CAIS'"
+            },
+            {
+                section: "Puberty",
+                fullLO: "LO5: Discuss two main types of precocious puberty, particularly with regard to the HPG axis.",
+                question: "A 7-year-old girl is brought to the pediatrician due to the early onset of breast development and pubic hair growth. Following a complete endocrine evaluation, her pediatrician diagnoses her with central precocious puberty. Which of the following best describes the underlying physiological mechanism causing this specific condition?",
+                options: {
+                    A: "Activation of the hypothalamic-pituitary-gonadal axis",
+                    B: "Exogenous estrogen cream exposure",
+                    C: "Secretion of testosterone from an adrenal tumor",
+                    D: "Secretion of estrogen from an ovarian cyst",
+                    E: "Suppression of the GnRH pulse generator"
+                },
+                correctAnswer: "A",
+                rationale: "Precocious puberty is defined as starting before age 8 in girls and age 9 in boys. Central precocious puberty is caused by the premature, true activation of the endogenous H-P-G axis. Peripheral precocious puberty is caused by activation from an exogenous source or a peripheral tumor (ovary, testis, adrenal) independent of the HPG axis.",
+                source: "Puberty PDF, slide 57: 'Mechanisms causing PP 1) Central PP: Activation of the H-P-G axis'"
+            },
+            {
+                section: "Puberty",
+                fullLO: "LO5: Discuss two main types of precocious puberty, particularly with regard to the HPG axis.",
+                question: "A 6-year-old boy presents with rapid sexual development and a sudden, massive increase in height. He is diagnosed with precocious puberty. Although he is currently much taller than his peers, without medical intervention to halt the process, what is the most likely long-term outcome regarding his physical stature?",
+                options: {
+                    A: "Eventual short stature due to early fusion of epiphyses",
+                    B: "Eventual short stature due to premature pituitary exhaustion",
+                    C: "Normal adult height due to compensatory slow growth later",
+                    D: "Unusually tall stature due to prolonged IGF-1 stimulation",
+                    E: "Unusually tall stature due to delayed epiphyseal closure"
+                },
+                correctAnswer: "A",
+                rationale: "Patients with precocious puberty undergo premature somatic growth. While they initially present as unusually tall for their age, the early exposure to sex steroids causes early fusion of the epiphyses (growth plates). This premature closure halts long bone growth early, leading to an eventual short stature in adulthood.",
+                source: "Puberty PDF, slide 57: 'Patients stimulate somatic growth & will develop sexually & in height, with early fusion of epiphyses with eventual short stature'"
+            },
+
+            // --- Section 3: Sexually Transmitted Diseases ---
+            {
+                section: "Sexually Transmitted Diseases",
+                fullLO: "LO1: Describe epidemiology and symptoms (typical and atypical) of various sexually transmitted infections.",
+                question: "A public health official is reviewing national surveillance data to allocate funding for STI prevention programs. In the United States, which of the following pathogens consistently remains the most commonly reported bacterial sexually transmitted infection?",
+                options: {
+                    A: "Chlamydia trachomatis",
+                    B: "Haemophilus ducreyi",
+                    C: "Klebsiella granulomatis",
+                    D: "Neisseria gonorrhea",
+                    E: "Treponema pallidum"
+                },
+                correctAnswer: "A",
+                rationale: "Chlamydia trachomatis remains the most common bacterial STI in the United States. Epidemiological data charts from the CDC show Chlamydia cases vastly outnumbering Gonorrhea and Syphilis combined.",
+                source: "Sexually Transmitted Diseases PDF, slide 7: 'Chlamydia Trachomatis (Humans)... Remains the most common bacterial STI'"
+            },
+            {
+                section: "Sexually Transmitted Diseases",
+                fullLO: "LO1: Describe epidemiology and symptoms (typical and atypical) of various sexually transmitted infections.",
+                question: "A 24-year-old woman presents to the emergency department complaining of painful, swollen joints, specifically her left wrist and right knee. Physical examination reveals several pustular skin lesions on her extremities. She mentions having an asymptomatic vaginal infection a few weeks ago but did not seek treatment. Which of the following is the most likely cause of her current symptoms?",
+                options: {
+                    A: "Bacterial vaginosis",
+                    B: "Disseminated gonococcal infection",
+                    C: "Primary syphilis",
+                    D: "Secondary syphilis",
+                    E: "Trichomonas vaginalis"
+                },
+                correctAnswer: "B",
+                rationale: "Disseminated Gonococcal Infection (DGI) occurs via bacteremic spread of Neisseria gonorrhea. GU or anorectal infections are often asymptomatic, but the disseminated disease classically presents with asymmetric polyarthralgia, tenosynovitis, or septic arthritis, often accompanied by skin involvement such as papules and pustules.",
+                source: "Sexually Transmitted Diseases PDF, slide 16: 'Disseminated Gonococcal Infection (DGI) • Bacteremic spread • Typically presents as asymmetric polyarthralgia, tenosynovitis, or septic arthritis • Majority of patients also present with skin involvement such as papules and pustules • GU or anorectal infections are often asymptomatic with DGI'"
+            },
+            {
+                section: "Sexually Transmitted Diseases",
+                fullLO: "LO2: Design a treatment regimen for each of the sexually transmitted infections.",
+                question: "A 22-year-old man presents with dysuria and purulent urethral discharge. A nucleic acid amplification test (NAAT) confirms an infection with Neisseria gonorrhea. Due to increasing rates of resistance, beta-lactamase production, and fluoroquinolone resistance globally, which of the following is the only remaining preferred treatment regimen for this infection?",
+                options: {
+                    A: "Azithromycin 1g PO x 1 dose",
+                    B: "Ceftriaxone 500 mg IM x 1 dose",
+                    C: "Ciprofloxacin 500 mg PO BID x 3 days",
+                    D: "Doxycycline 100 mg PO BID x 7 days",
+                    E: "Penicillin G 2.4 million units IM x 1 dose"
+                },
+                correctAnswer: "B",
+                rationale: "Due to increasing resistance (including beta-lactamases and gyrA/gyrB mutations causing fluoroquinolone resistance), ceftriaxone is the only remaining beta-lactam recommended for the preferred treatment of gonorrhea. The dose is 500 mg IM x 1 if the patient is <150 kg (or 1g if ≥150 kg).",
+                source: "Sexually Transmitted Diseases PDF, slides 13 & 18: 'Neisseria Gonorrhea... β-lactamases – ceftriaxone is the only remaining β-lactam recommended for treatment' AND 'Treatment [for Gonorrhea] Preferred • Ceftriaxone 500 mg IM x 1 dose if < 150 kg'"
+            },
+            {
+                section: "Sexually Transmitted Diseases",
+                fullLO: "LO2: Design a treatment regimen for each of the sexually transmitted infections.",
+                question: "A 28-year-old woman presents with a malodorous, grey, frothy vaginal discharge. Vaginal fluid pH is 5.0, and a \"whiff test\" with 10% KOH produces a fishy odor. A wet mount reveals numerous \"clue cells.\" What is the recommended treatment regimen for this patient's condition?",
+                options: {
+                    A: "Azithromycin 1g PO x 1 dose",
+                    B: "Ceftriaxone 500 mg IM x 1 dose",
+                    C: "Doxycycline 100 mg PO twice daily x 7 days",
+                    D: "Metronidazole 500 mg PO BID x 7 days",
+                    E: "Valacyclovir 1g PO daily x 7 days"
+                },
+                correctAnswer: "D",
+                rationale: "The patient has Bacterial Vaginosis (BV), diagnosed clinically via Amsel's criteria (grey discharge, clue cells, pH >4.5, positive whiff test). The recommended treatment regimen for BV is Metronidazole 500 mg PO BID for 7 days (or metronidazole gel 0.75% / clindamycin cream).",
+                source: "Sexually Transmitted Diseases PDF, slides 43 & 45: 'Diagnosis - Clinical | Amsel’s criteria - at least 3/4... Homogenous, thin discharge (milk-like) | Clue cells | Vaginal fluid pH > 4.5 | Fishy odor' AND 'Treatment [for BV] Recommended Regimens: Metronidazole 500 mg PO BID x 7 days'"
+            },
+            {
+                section: "Sexually Transmitted Diseases",
+                fullLO: "LO3: Discuss stages and clinical manifestations of syphilis.",
+                question: "A 30-year-old man presents to the clinic after noticing a firm, round ulcer on the shaft of his penis. He reports the ulcer appeared approximately three weeks after an unprotected sexual encounter. The lesion is completely painless and does not itch. Which of the following stages of syphilis does this presentation represent?",
+                options: {
+                    A: "Early latent syphilis",
+                    B: "Late latent syphilis",
+                    C: "Primary syphilis",
+                    D: "Secondary syphilis",
+                    E: "Tertiary syphilis"
+                },
+                correctAnswer: "C",
+                rationale: "Primary syphilis typically presents days to months after infection as a painless chancre (ulcer) at the site of inoculation. The chancre is self-limiting.",
+                source: "Sexually Transmitted Diseases PDF, slide 20: 'Presentations | Primary | Days to months after infection | Painless chancre that is self-limiting'"
+            },
+            {
+                section: "Sexually Transmitted Diseases",
+                fullLO: "LO3: Discuss stages and clinical manifestations of syphilis.",
+                question: "A 26-year-old woman presents to her primary care physician with a new-onset rash. Physical examination reveals a non-pruritic, macular rash distributed over her torso, extending notably to her palms and soles. She also complains of fatigue, muscle aches, and low-grade fever. Assuming these symptoms are caused by Treponema pallidum, this clinical presentation corresponds to which stage of the disease?",
+                options: {
+                    A: "Early latent syphilis",
+                    B: "Late latent syphilis",
+                    C: "Neurosyphilis",
+                    D: "Secondary syphilis",
+                    E: "Tertiary syphilis"
+                },
+                correctAnswer: "D",
+                rationale: "Secondary syphilis occurs weeks to months after the initial infection and classically presents with flu-like symptoms and a non-pruritic macular rash that characteristically involves the palms and soles.",
+                source: "Sexually Transmitted Diseases PDF, slide 20: 'Presentations | Secondary | Weeks to months after infection | Non-pruritic macular rash (commonly palms and soles) but can be anywhere + flu-like symptoms'"
+            },
+            {
+                section: "Sexually Transmitted Diseases",
+                fullLO: "LO4: Interpret diagnostic tests associated with each sexually transmitted infection.",
+                question: "A 40-year-old man undergoes testing for syphilis as part of a routine health screening. His institution uses the standard \"reverse sequence testing\" algorithm to maximize sensitivity for primary and latent syphilis. Which of the following tests is performed first in this specific diagnostic sequence?",
+                options: {
+                    A: "Darkfield microscopy",
+                    B: "Fluorescent Treponemal Antibody-Absorption (FTA-ABS)",
+                    C: "PCR via GeneXpert",
+                    D: "Rapid Plasma Reagin (RPR)",
+                    E: "Venereal Disease Research Laboratory (VDRL) test"
+                },
+                correctAnswer: "B",
+                rationale: "Most institutions now use reverse sequence testing to increase sensitivity for primary and latent syphilis. This algorithm begins with a specific Treponemal test (such as the FTA-ABS or TP-PA or EIA) to check for antibodies, followed by a non-treponemal test (like RPR) to confirm active infection and establish a titer.",
+                source: "Sexually Transmitted Diseases PDF, slide 24: 'Most institutions use reverse sequence testing • FTA-ABS (treponemal) -> RPR (non-treponemal) • Increases sensitivity for detecting primary and latent syphilis'"
+            },
+            {
+                section: "Sexually Transmitted Diseases",
+                fullLO: "LO4: Interpret diagnostic tests associated with each sexually transmitted infection.",
+                question: "A 45-year-old man visits a new primary care physician and undergoes routine STI screening. A Fluorescent Treponemal Antibody-Absorption (FTA-ABS) test returns positive. The patient is alarmed but states he was successfully treated for syphilis with penicillin 10 years ago and has had no subsequent exposures. The physician orders a Rapid Plasma Reagin (RPR) test, which returns negative. Which of the following is the most appropriate interpretation of these specific diagnostic test results?",
+                options: {
+                    A: "The patient has a new, early primary syphilis infection.",
+                    B: "The patient has active, untreated latent syphilis.",
+                    C: "The patient requires a lumbar puncture to diagnose neurosyphilis.",
+                    D: "The patient was successfully treated, as treponemal tests remain positive for life.",
+                    E: "The RPR result is a false negative due to the prozone effect."
+                },
+                correctAnswer: "D",
+                rationale: "Treponemal tests (such as FTA-ABS and TP-PA) detect specific antibodies to T. pallidum and remain positive for the patient's entire life, even after successful treatment. Non-treponemal tests (such as RPR and VDRL) are used to evaluate the response to therapy (test-of-cure) because their titers decrease following adequate treatment. A positive FTA-ABS with a negative RPR in a patient with a history of treated syphilis indicates a past, successfully treated infection.",
+                source: "Sexually Transmitted Diseases PDF, slides 23 & 24: 'Treponemal Tests... Fluorescent Treponemal Antibody-Absorption (FTA-ABS)... Remain positive for life, even after treatment' AND 'Non-Treponemal Tests... RPR... Test-of-Cure • Non-treponemal tests used to evaluate response to therapy'"
+            },
+            {
+                section: "Sexually Transmitted Diseases",
+                fullLO: "LO5: Determine the appropriateness of preemptive or prophylactic treatment of sexually transmitted infections.",
+                question: "A 28-year-old man who has sex with men presents to the clinic. He reports engaging in condomless anal sex approximately 48 hours ago. He has no symptoms but requests medication to prevent acquiring a sexually transmitted infection. Based on recent studies demonstrating a reduction in chlamydia, gonorrhea, and syphilis rates in this population, which of the following is the most appropriate prophylactic regimen?",
+                options: {
+                    A: "Azithromycin 1g x 1 dose",
+                    B: "Ceftriaxone 500mg IM x 1 dose",
+                    C: "Doxycycline 200 mg x 1 dose",
+                    D: "Metronidazole 500 mg x 1 dose",
+                    E: "Penicillin G 2.4 million units IM x 1 dose"
+                },
+                correctAnswer: "C",
+                rationale: "Doxycycline post-exposure prophylaxis (Doxy PEP) is a 200 mg single dose given within 72 hours of condomless anal or oral sex. Studies have shown this significantly reduces the rates of bacterial STIs (chlamydia, gonorrhea, syphilis) specifically in men who have sex with men and transgender women.",
+                source: "Sexually Transmitted Diseases PDF, slide 27: 'Bacterial STI Prophylaxis • Doxy PEP (post-exposure prophylaxis) – doxycycline 200 mg x 1 dose within 72 hours of condomless anal or oral sex • Studies have shown a reduction in rates of chlamydia, gonorrhea, and syphilis in men who have sex with men and transgender women'"
+            },
+            {
+                section: "Sexually Transmitted Diseases",
+                fullLO: "LO5: Determine the appropriateness of preemptive or prophylactic treatment of sexually transmitted infections.",
+                question: "A 24-year-old woman is diagnosed with an uncomplicated urogenital Chlamydia trachomatis infection. She is prescribed a 7-day course of doxycycline. To prevent reinfection and halt the chain of transmission, she is advised to inform her recent sexual contacts so they can receive preemptive treatment. Partners from within what maximum time frame prior to symptom onset/diagnosis should be referred for this treatment?",
+                options: {
+                    A: "The last 7 days",
+                    B: "The last 14 days",
+                    C: "The last 30 days",
+                    D: "The last 60 days",
+                    E: "The last 120 days"
+                },
+                correctAnswer: "D",
+                rationale: "When a patient is treated for a chlamydial (or gonococcal) infection, it is recommended that sex partners be referred for testing and preemptive treatment if the last sexual contact occurred within the previous 60 days.",
+                source: "Sexually Transmitted Diseases PDF, slide 11: 'Other Treatment Consideration [for Chlamydia/Gonorrhea]... • Sex partners should be referred for testing and preemptive treatment if last contact was within 60 days'"
+            }
+        ];
+
+        // --- Core Logic ---
+        const quizRoot = document.getElementById('quiz-root');
+        const themeSelect = document.getElementById('theme-select');
+        const pinBtn = document.getElementById('pin-btn');
+        const mainHeader = document.getElementById('main-header');
+        const sectionNav = document.getElementById('section-nav');
+        const customBuilder = document.getElementById('custom-builder');
+        const rootElements = document.documentElement;
+
+        let isRevealed = false;
+
+        function toggleAllLOs() {
+            isRevealed = !isRevealed;
+            const btn = document.getElementById('reveal-all-btn');
+            btn.textContent = isRevealed ? "Hide Learning Objectives" : "Show Learning Objectives";
+            
+            document.querySelectorAll('.lo-box').forEach(box => {
+                box.style.display = isRevealed ? 'block' : 'none';
+            });
+        }
+
+        function initQuiz() {
+            let currentSection = "";
+            let sectionIndex = 0;
+            
+            quizData.forEach((item, index) => {
+                if (item.section !== currentSection) {
+                    currentSection = item.section;
+                    
+                    const sectionId = 'sec-' + sectionIndex;
+                    
+                    const sectionHeader = document.createElement('h2');
+                    sectionHeader.className = 'section-header';
+                    sectionHeader.id = sectionId;
+                    sectionHeader.textContent = currentSection;
+                    quizRoot.appendChild(sectionHeader);
+
+                    const navBtn = document.createElement('button');
+                    let btnText = currentSection;
+                    if (btnText.includes("Male Reproductive Disorders")) btnText = "Male Repro Disorders";
+                    if (btnText.includes("Puberty")) btnText = "Puberty";
+                    if (btnText.includes("Sexually Transmitted Diseases")) btnText = "STDs";
+                    
+                    navBtn.textContent = btnText;
+                    navBtn.onclick = () => {
+                        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+                    };
+                    sectionNav.appendChild(navBtn);
+
+                    sectionIndex++;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `q-card-${index}`;
+
+                const loBox = document.createElement('div');
+                loBox.className = 'lo-box';
+                loBox.id = `lo-${index}`;
+                loBox.innerHTML = item.fullLO;
+                card.appendChild(loBox);
+
+                const qText = document.createElement('div');
+                qText.className = 'question-text';
+                qText.innerHTML = `${index + 1}. ${item.question}`;
+                card.appendChild(qText);
+
+                const optionsGrid = document.createElement('div');
+                optionsGrid.className = 'options-grid';
+
+                for (const[key, value] of Object.entries(item.options)) {
+                    const label = document.createElement('label');
+                    label.className = 'option-label';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = key;
+
+                    const span = document.createElement('span');
+                    span.innerHTML = `${key}. ${value}`;
+
+                    label.appendChild(input);
+                    label.appendChild(span);
+                    optionsGrid.appendChild(label);
+                }
+                card.appendChild(optionsGrid);
+
+                const btn = document.createElement('button');
+                btn.className = 'btn-check';
+                btn.textContent = 'Check Answer';
+                btn.onclick = () => checkAnswer(index);
+                card.appendChild(btn);
+
+                const feedback = document.createElement('div');
+                feedback.className = 'feedback';
+                feedback.id = `feedback-${index}`;
+                card.appendChild(feedback);
+
+                quizRoot.appendChild(card);
+            });
+
+            const returnContainer = document.createElement('div');
+            returnContainer.style.textAlign = 'center';
+            returnContainer.style.marginTop = '2rem';
+            
+            const returnBtn = document.createElement('a');
+            returnBtn.href = 'https://ibecerramcg.github.io/GI-GU-ENDO-Practice-Quizzes/';
+            returnBtn.className = 'btn-link';
+            returnBtn.textContent = '← Return to Quiz Directory';
+            
+            returnContainer.appendChild(returnBtn);
+            quizRoot.appendChild(returnContainer);
+
+            const savedTheme = localStorage.getItem('quizTheme') || 'dark';
+            themeSelect.value = savedTheme;
+            changeTheme(savedTheme);
+
+            const savedPinState = localStorage.getItem('headerPinned');
+            toggleHeader(savedPinState !== 'false');
+        }
+
+        function checkAnswer(index) {
+            const selected = document.querySelector(`input[name="question-${index}"]:checked`);
+            const feedbackEl = document.getElementById(`feedback-${index}`);
+            const data = quizData[index];
+
+            if (!selected) {
+                alert("Please select an answer.");
+                return;
+            }
+
+            const isCorrect = selected.value === data.correctAnswer;
+            
+            let html = `<span class="feedback-header">${isCorrect ? "Correct!" : "Incorrect"}</span>`;
+            if (!isCorrect) {
+                html += `<div>The correct answer is <strong>${data.correctAnswer}</strong>.</div>`;
+            }
+            
+            html += `<div class="rationale"><strong>Rationale:</strong> ${data.rationale}</div>`;
+            html += `<div class="source"><strong>Source:</strong> ${data.source}</div>`;
+
+            feedbackEl.innerHTML = html;
+            feedbackEl.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackEl.style.display = 'block';
+            
+            const loBox = document.getElementById(`lo-${index}`);
+            loBox.style.display = 'block';
+        }
+
+        function changeTheme(themeName) {
+            localStorage.setItem('quizTheme', themeName);
+            
+            if (themeName === 'custom') {
+                rootElements.removeAttribute('data-theme');
+                customBuilder.classList.add('active');
+                loadCustomTheme();
+            } else {
+                rootElements.setAttribute('data-theme', themeName);
+                customBuilder.classList.remove('active');
+                rootElements.removeAttribute('style');
+            }
+        }
+
+        function updateCustomTheme() {
+            const bg = document.getElementById('color-bg').value;
+            const card = document.getElementById('color-card').value;
+            const text = document.getElementById('color-text').value;
+            const accent = document.getElementById('color-accent').value;
+
+            rootElements.style.setProperty('--bg-body', bg);
+            rootElements.style.setProperty('--bg-header', bg);
+            rootElements.style.setProperty('--bg-card', card);
+            rootElements.style.setProperty('--highlight-bg', card);
+            rootElements.style.setProperty('--text-main', text);
+            rootElements.style.setProperty('--text-accent', accent);
+            rootElements.style.setProperty('--button-bg', accent);
+            rootElements.style.setProperty('--button-text', bg);
+            rootElements.style.setProperty('--border-color', accent + '40');
+
+            const customColors = { bg, card, text, accent };
+            localStorage.setItem('customThemeColors', JSON.stringify(customColors));
+        }
+
+        function loadCustomTheme() {
+            const savedColors = JSON.parse(localStorage.getItem('customThemeColors'));
+            if (savedColors) {
+                document.getElementById('color-bg').value = savedColors.bg;
+                document.getElementById('color-card').value = savedColors.card;
+                document.getElementById('color-text').value = savedColors.text;
+                document.getElementById('color-accent').value = savedColors.accent;
+                updateCustomTheme();
+            } else {
+                updateCustomTheme();
+            }
+        }
+
+        function toggleHeader(forceState) {
+            const isCurrentlyPinned = !mainHeader.classList.contains('unpinned');
+            const newState = (typeof forceState === 'boolean') ? forceState : !isCurrentlyPinned;
+
+            if (newState) {
+                mainHeader.classList.remove('unpinned');
+                pinBtn.classList.add('pin-active');
+                localStorage.setItem('headerPinned', 'true');
+            } else {
+                mainHeader.classList.add('unpinned');
+                pinBtn.classList.remove('pin-active');
+                localStorage.setItem('headerPinned', 'false');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initQuiz);
+
+    </script>
+</body>
+</html>
